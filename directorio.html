@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <title>INTERSUR TRAMO 4</title>
+
+  <style>    
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+    
+    .top-bar {
+      width: 100%;
+      height: 40px;
+      background-color: #663aa5;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .main-content {
+      margin-top: 40px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #ffffff;
+      position: relative;
+      z-index: 1000;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .logo img {
+      height: 70px;
+      padding-left: 10px;
+    }
+
+    .main-nav {
+      flex-grow: 1;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .main-nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .main-nav ul li {
+      position: relative;
+      margin-right: 20px;
+    }
+
+    .main-nav ul li a {
+      font-family: 'Montserrat', sans-serif;
+      padding: 10px;
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
+      display: flex;
+      align-items: center;
+    }
+    
+    .main-nav ul li a[href="#"][onclick*="menu12"] {
+      visibility: hidden;
+    }
+
+    .static-link {
+      position: relative;
+      left: -1px;
+      margin-right: 0;
+    }
+    
+    .static-link a {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: bold;
+      font-size: 17px !important;
+      color: #333;
+      padding: 10px;
+      display: block;
+    }
+
+    .static-link a:hover {
+      background-color: #ddd;
+      padding: 5px;
+      border-radius: 6px;
+      transition: background-color 0.5s ease-in-out;
+    }
+    
+    #menu15 {
+      left: -70px; /* Ajusta este valor para mover la cápsula hacia la izquierda */
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #f9f9f9;
+      min-width: 200px;
+      border: 1px solid #ccc;
+      padding: 15px 10px 10px 10px;
+      z-index: 1000;
+    }
+
+    .dropdown-content ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dropdown-content ul li {
+      padding: 8px 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .dropdown-content ul li:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-content ul li a {
+      display: block;
+      color: #333;
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    .dropdown-content .close-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #900;
+      cursor: pointer;
+    }
+
+    /* Sección principal con carrusel de imágenes */
+    .hero {
+      position: relative;
+      width: 100vw;
+      height: 700px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .carousel {
+      position: absolute;
+      width: 100vw;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .carousel-image {
+      position: absolute;
+      width: 100vw;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .carousel-image.active {
+      opacity: 1;
+    }
+
+    .hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 36px;
+      font-weight: bold;
+      text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
+      margin-bottom: 5px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 25px;
+      font-weight: normal;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+        position: absolute;
+        left: 8.5%; /* Mueve el texto más a la derecha (ajústalo según necesidad) */
+        line-height: 1.2;
+        transform: translateX(-50%);
+        text-align: center;
+    }
+    .hero h2 {
+        position: absolute;
+        left: 12%; /* Mueve el texto más a la derecha (ajústalo según necesidad) */
+        transform: translateX(-50%);              
+        top: 58%; /* Ajusta el valor para mover más abajo */
+        left: 5%;        
+    }
+
+    /* Sección inferior pie de pagina */
+    .footer {
+      background-color: #0b0d20;
+      padding: 20px;
+      text-align: center;
+      width: 100%;  
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;    
+      margin-bottom: 10px;
+    }
+
+    .social-link {  
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;  
+      height: 50px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      text-decoration: none;
+    }
+
+    .social-link:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .social-link i {
+      font-size: 24px;  
+      color: white;
+    }
+
+    .footer-text {
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+  <div class="main-content">
+    <header>
+      <div class="logo">
+        <a href="https://grupomatic.com/" target="_blank">
+          <img src="Imagenes/logo_matic.png" alt="Logo GRUPO MATIC">
+        </a>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li class="static-link">
+            <a href="https://www.intersur.com.pe/tramo-4/">IIRSA SUR <br>TRAMO 4</a>
+          </li>
+        
+        <!-- Cada li representa un ítem del menú que al hacer clic despliega un submenu -->
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu1'); return false;">AREA 1</a>
+          <div class="dropdown-content" id="menu1">
+            <button class="close-btn" onclick="closeDropdown('menu1')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_1/V1_A1.html">Video Area 1</a></li>            
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu2'); return false;">AREA 2</a>
+          <div class="dropdown-content" id="menu2">
+            <button class="close-btn" onclick="closeDropdown('menu2')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_2/V1_A2.html">Video Area 2</a></li>                          
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu3'); return false;">AREA 3</a>
+          <div class="dropdown-content" id="menu3">
+            <button class="close-btn" onclick="closeDropdown('menu3')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_3/V1_A3.html">Video Area 3</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu4'); return false;">AREA 4_5</a>
+          <div class="dropdown-content" id="menu4">
+            <button class="close-btn" onclick="closeDropdown('menu4')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_4_5/V1_A4-5.html">Video Area 4_5</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu5'); return false;">AREA 6</a>
+          <div class="dropdown-content" id="menu5">
+            <button class="close-btn" onclick="closeDropdown('menu5')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_6/V1_A6.html">Video Area 5</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu6'); return false;">AREA 7</a>
+          <div class="dropdown-content" id="menu6">
+            <button class="close-btn" onclick="closeDropdown('menu6')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_7/V1_A7.html">Video Area 7.1</a></li>
+              <li><a href="Sub_Tramos/AREA_7/V2_A7.html">Video Area 7.2</a></li>     
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu7'); return false;">AREA 8</a>
+          <div class="dropdown-content" id="menu7">
+            <button class="close-btn" onclick="closeDropdown('menu7')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_8/V1_A8.html">Video Area 8</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu8'); return false;">AREA 9</a>
+          <div class="dropdown-content" id="menu8">
+            <button class="close-btn" onclick="closeDropdown('menu8')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_9/V1_A9.htm">Video Area 9</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu9'); return false;">AREA 10</a>
+          <div class="dropdown-content" id="menu9">
+            <button class="close-btn" onclick="closeDropdown('menu9')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_10/V1_A10.html">Video Area 10</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu10'); return false;">AREA 11</a>
+          <div class="dropdown-content" id="menu10">
+            <button class="close-btn" onclick="closeDropdown('menu10')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_11/V1_A11.html">Video Area 11</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu11'); return false;">AREA 12</a>
+          <div class="dropdown-content" id="menu11">
+            <button class="close-btn" onclick="closeDropdown('menu11')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_12/V1_A12.html">Video Area 12</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu13'); return false;">AREA 13</a>
+          <div class="dropdown-content" id="menu13">
+            <button class="close-btn" onclick="closeDropdown('menu13')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_13/V1_A13.html">Video Area 13</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu14'); return false;">AREA 14</a>
+          <div class="dropdown-content" id="menu14">
+            <button class="close-btn" onclick="closeDropdown('menu14')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_14/V1_A14.html">Video Area 14</a></li>    
+            </ul>
+          </div>
+        </li>
+        <li class="dropdown">
+          <a href="#" onclick="toggleDropdown('menu15'); return false;">AREA 15</a>
+          <div class="dropdown-content" id="menu15">
+            <button class="close-btn" onclick="closeDropdown('menu15')">X</button>
+            <ul>
+              <li><a href="Sub_Tramos/AREA_15/V1_A15.html">Video Area 15</a></li>    
+            </ul>
+          </div>
+        </li>        
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Sección principal con carrusel de imágenes -->
+    <main>
+      <div class="hero">
+        <div class="carousel">
+          <img src="Imagenes/Intersur_2.png" alt="Imagen 1" class="carousel-image active">
+          <img src="Imagenes/Intersur_1.png" alt="Imagen 2" class="carousel-image">
+          <img src="Imagenes/Intersur_3.png" alt="Imagen 3" class="carousel-image">
+          <img src="Imagenes/Intersur_4.png" alt="Imagen 4" class="carousel-image">
+          <img src="Imagenes/Intersur_5.png" alt="Imagen 5" class="carousel-image">
+        </div>
+        <h1>INTERSUR <br> TRAMO 4</h1>
+        <h2>Perú</h2>
+      </div>
+    </main>
+  </div>
+
+  <!-- Script para cambiar las imágenes automáticamente -->
+  <script>
+    function toggleDropdown(id) {
+      var menu = document.getElementById(id);
+      // Opcional: cerrar otros menús abiertos
+      var dropdowns = document.getElementsByClassName('dropdown-content');
+      for (var i = 0; i < dropdowns.length; i++) {
+        if (dropdowns[i].id !== id) {
+          dropdowns[i].style.display = 'none';
+        }
+      }
+      // Mostrar u ocultar el menú actual
+      if (menu.style.display === "block") {
+        menu.style.display = "none";
+      } else {
+        menu.style.display = "block";
+      }
+    }
+    function closeDropdown(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const images = document.querySelectorAll(".carousel-image");
+      const textH2 = document.querySelector(".hero h2");
+      
+      const texts = [" Perú-Puno", " Perú-Puno", "Area 1", " San Antón", "Area 10"]; // Textos para cada imagen
+      let index = 0;
+  
+      function changeSlide() {
+        images.forEach((img, i) => {
+          img.classList.remove("active");
+        });
+  
+        images[index].classList.add("active");
+        textH2.textContent = texts[index]; // Cambia el texto H2 según la imagen actual
+  
+        index = (index + 1) % images.length; // Cambia de imagen en bucle
+      }
+  
+      setInterval(changeSlide, 5000); // Cambia cada 5 segundos
+    });
+  </script>
+  
+  <!-- Pie de pagina web -->
+  <footer class="footer">
+    <div class="social-icons">
+      <a href="https://www.facebook.com/profile.php?id=100093184975334" target="_blank" class="social-link">
+        <i class="fa-brands fa-facebook-f"></i>
+      </a>
+
+      <!--<a href="https://www.twitter.com" target="_blank" class="social-link">        <i class="fa-brands fa-twitter"></i>      </a>
+      <a href="https://www.youtube.com" target="_blank" class="social-link">        <i class="fa-brands fa-youtube"></i>      </a>
+      <a href="https://www.instagram.com" target="_blank" class="social-link">        <i class="fa-brands fa-instagram"></i>      </a>-->
+
+      <a href="https://internationalwebsite.com" target="_blank" class="social-link">
+        <i class="fa-solid fa-globe"></i>
+      </a>
+      <a href="https://www.linkedin.com/company/grupo-matic/posts/?feedView=all" target="_blank" class="social-link">
+        <i class="fa-brands fa-linkedin-in"></i>
+      </a>
+    </div>
+    <p class="footer-text">Powered by GRUPO MATIC</p>
+  </footer>
+
+</body>
+</html>

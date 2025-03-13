@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sub Tramo " "</title>
+  
+  <!-- Importación de la fuente Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset y estilos básicos */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    
+    /* Top Bar */
+    .top-bar {
+      width: 100%;
+      height: 40px; /* Altura de la barra superior */
+      background-color: #663aa5;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+    
+    /* Contenido principal */
+    .main-content {
+      margin-top: 40px; /* Espacio para la top-bar */
+    }
+    
+    /* Cabecera: logo y menú */
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #ccc;
+      position: relative;
+      z-index: 1000;
+    }
+    .logo img {
+      height: 70px;
+      padding-left: 10px;
+    }
+    .main-nav {
+      flex-grow: 1;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .main-nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+    }
+    .main-nav ul li {
+      position: relative;
+      margin-right: 20px;
+    }
+    .main-nav ul li a {
+      font-family: 'Montserrat', sans-serif;
+      padding: 10px;
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
+      display: flex;
+      align-items: center;
+    }
+    .main-nav ul li a::after {
+      /* Opcional: puedes activar la flecha agregando content */
+      /* content: " ▼"; */
+      font-size: 12px;
+      color: #333;
+      margin-left: 5px;
+    }
+    
+    #menu15 {
+      left: -120px; /* Ajusta este valor para mover la cápsula hacia la izquierda */
+    }
+
+    .static-link {
+      position: relative;
+      left: -1px;
+      margin-right: 0;
+    }
+
+    .static-link a {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    padding: 10px;
+    display: block;
+    }
+
+    /* Dropdowns */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #f9f9f9;
+      min-width: 200px;
+      border: 1px solid #ccc;
+      padding: 15px 10px 10px 10px;
+      z-index: 1000;
+    }
+    .dropdown-content ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .dropdown-content ul li {
+      padding: 8px 15px;
+      border-bottom: 1px solid #eee;
+    }
+    .dropdown-content ul li:last-child {
+      border-bottom: none;
+    }
+    .dropdown-content ul li a {
+      display: block;
+      color: #333;
+      padding: 8px;
+      font-size: 14px;
+    }
+    .dropdown-content .close-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #900;
+      cursor: pointer;
+    }
+    
+    /* Sección Hero (títulos) */
+    .hero {
+      text-align: center;
+      padding: 20px;
+    }
+    
+    /* Contenedor de videos */
+    .video-container {
+      display: flex;
+      width: 100%;
+      height: 900px; 
+      margin-top: 20px; /* Separación desde el subtítulo */
+    }
+    /* Primer video (maestro): 70% */
+    #youtube-video-1 {
+      width: 81%;
+      height: 100%;
+    }
+    /* Segundo video (esclavo): 30% */
+    #youtube-video-2 {
+      width: 19%;
+      height: 100%;
+    }
+  </style>
+  
+  <!-- API de YouTube y sincronización de videos -->
+  <script>
+    let player1, player2;
+    let isSyncing = false;       // Bandera para evitar bucles infinitos
+    let playersReadyCount = 0;   // Contador para saber cuándo ambos jugadores están listos
+    let syncInterval;            // Intervalo global de sincronización
+
+    // Se llama cuando la API de YouTube está lista
+    function onYouTubeIframeAPIReady() {
+      // Primer video (maestro)
+      player1 = new YT.Player('youtube-video-1', {
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+      // Segundo video (esclavo)
+      player2 = new YT.Player('youtube-video-2', {
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': function() {} // No se sincroniza desde aquí
+        }
+      });
+    }
+    
+    // Se ejecuta cuando un reproductor está listo
+    function onPlayerReady(event) {
+      playersReadyCount++;
+      if (playersReadyCount === 2) {
+        startSyncInterval();
+      }
+    }
+    
+    // Se ejecuta cuando cambia el estado del primer video
+    function onPlayerStateChange(event) {
+      if (event.target !== player1) return;
+      if (isSyncing) return;
+      isSyncing = true;
+      
+      const state1 = player1.getPlayerState();
+      const state2 = player2.getPlayerState();
+      
+      // Sincronizar estado: reproducción, pausa o finalización
+      if (state1 === YT.PlayerState.PLAYING && state2 !== YT.PlayerState.PLAYING) {
+        player2.playVideo();
+      } else if (state1 === YT.PlayerState.PAUSED && state2 !== YT.PlayerState.PAUSED) {
+        player2.pauseVideo();
+      } else if (state1 === YT.PlayerState.ENDED) {
+        player2.stopVideo();
+      }
+      
+      isSyncing = false;
+    }
+    
+    // Inicia un único intervalo para sincronizar el tiempo de ambos videos
+    function startSyncInterval() {
+      syncInterval = setInterval(() => {
+        if (!player1 || !player2) return;
+        if (isSyncing) return;
+        isSyncing = true;
+        
+        const time1 = player1.getCurrentTime();
+        const time2 = player2.getCurrentTime();
+        
+        // Si la diferencia es mayor a 0.3 segundos, se sincroniza el segundo video
+        if (Math.abs(time1 - time2) > 0.3) {
+          player2.seekTo(time1, true);
+        }
+        
+        isSyncing = false;
+      }, 300);
+    }
+  </script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="top-bar"></div>
+  
+  <!-- Contenido Principal -->
+  <div class="main-content">
+    <!-- Cabecera con logo y menú -->
+    <header>
+      <div class="logo">
+        <img src="../../Imagenes/logo_matic.png" alt="Logo Typsa">
+      </div>
+      <nav class="main-nav">
+        <ul>
+        
+        <li class="static-link">
+          <a href="../../directorio.html">IIRSA SUR <br>TRAMO 4</a>
+        </li>
+
+          <!-- Cada li representa un ítem del menú que al hacer clic despliega un submenu -->
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu1'); return false;">AREA 1</a>
+            <div class="dropdown-content" id="menu1">
+              <button class="close-btn" onclick="closeDropdown('menu1')">X</button>
+              <ul>
+                <li><a href="../AREA_1/V1_A1.html">Video Area 1</a></li>            
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu2'); return false;">AREA 2</a>
+            <div class="dropdown-content" id="menu2">
+              <button class="close-btn" onclick="closeDropdown('menu2')">X</button>
+              <ul>
+                <li><a href="../AREA_2/V1_A2.html">Video Area 2</a></li>                          
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu3'); return false;">AREA 3</a>
+            <div class="dropdown-content" id="menu3">
+              <button class="close-btn" onclick="closeDropdown('menu3')">X</button>
+              <ul>
+                <li><a href="V1_A3.html">Video Area 3</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu4'); return false;">AREA 4_5</a>
+            <div class="dropdown-content" id="menu4">
+              <button class="close-btn" onclick="closeDropdown('menu4')">X</button>
+              <ul>
+                <li><a href="../AREA_4_5/V1_A4-5.html">Video Area 4_5</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu5'); return false;">AREA 6</a>
+            <div class="dropdown-content" id="menu5">
+              <button class="close-btn" onclick="closeDropdown('menu5')">X</button>
+              <ul>
+                <li><a href="../AREA_6/V1_A6.html">Video Area 6</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu6'); return false;">AREA 7</a>
+            <div class="dropdown-content" id="menu6">
+              <button class="close-btn" onclick="closeDropdown('menu6')">X</button>
+              <ul>
+                <li><a href="../AREA_7/V1_A7.html">Video Area 7.1</a></li> 
+                <li><a href="../AREA_7/V2_A7.html">Video Area 7.2</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu7'); return false;">AREA 8</a>
+            <div class="dropdown-content" id="menu7">
+              <button class="close-btn" onclick="closeDropdown('menu7')">X</button>
+              <ul>
+                <li><a href="../AREA_8/V1_A8.html">Video Area 8</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu8'); return false;">AREA 9</a>
+            <div class="dropdown-content" id="menu8">
+              <button class="close-btn" onclick="closeDropdown('menu8')">X</button>
+              <ul>
+                <li><a href="../AREA_9/V1_A9.htm">Video Area 9</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu9'); return false;">AREA 10</a>
+            <div class="dropdown-content" id="menu9">
+              <button class="close-btn" onclick="closeDropdown('menu9')">X</button>
+              <ul>
+                <li><a href="../AREA_10/V1_A10.html">Video Area 10</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu10'); return false;">AREA 11</a>
+            <div class="dropdown-content" id="menu10">
+              <button class="close-btn" onclick="closeDropdown('menu10')">X</button>
+              <ul>
+                <li><a href="../AREA_11/V1_A11.html">Video Area 11</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu11'); return false;">AREA 12</a>
+            <div class="dropdown-content" id="menu11">
+              <button class="close-btn" onclick="closeDropdown('menu11')">X</button>
+              <ul>
+                <li><a href="../AREA_12/V1_A12.html">Video Area 12</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu13'); return false;">AREA 13</a>
+            <div class="dropdown-content" id="menu13">
+              <button class="close-btn" onclick="closeDropdown('menu13')">X</button>
+              <ul>
+                <li><a href="../AREA_13/V1_A13.html">Video Area 13</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu14'); return false;">AREA 14</a>
+            <div class="dropdown-content" id="menu14">
+              <button class="close-btn" onclick="closeDropdown('menu14')">X</button>
+              <ul>
+                <li><a href="../AREA_14/V1_A14.html">Video Area 14</a></li>    
+              </ul>
+            </div>
+          </li>
+          <li class="dropdown">
+            <a href="#" onclick="toggleDropdown('menu15'); return false;">AREA 15</a>
+            <div class="dropdown-content" id="menu15">
+              <button class="close-btn" onclick="closeDropdown('menu15')">X</button>
+              <ul>
+                <li><a href="../AREA_15/V1_A15.html">Video Area 15</a></li>    
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    
+    <!-- Sección principal con títulos -->
+    <main>
+      <div class="hero">
+        <h1>Area 3</h1>
+        <h2>Azangaro - San Anton</h2>
+        <H3>RI Km 63 + 100 <br>RF Km 62 + 300</H3>
+      </div>
+      
+      <!-- Contenedor de videos (ubicado justo debajo del subtítulo) -->
+      <div class="video-container">
+        <iframe id="youtube-video-1"
+          src="https://www.youtube.com/embed/_KjOTep5kVQ?si=YjXYH960OnPnWWFl&enablejsapi=1"
+          title="YouTube video player 1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+        </iframe>
+        <iframe id="youtube-video-2"
+          src="https://www.youtube.com/embed/1-wXF8h0Bq8?si=ytAju5Hbkk2hlIZX&enablejsapi=1"
+          title="YouTube video player 2"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+        </iframe>
+      </div>      
+    </main>
+  </div>
+  
+  <!-- Scripts para manejar dropdowns -->
+  <script>
+    function toggleDropdown(id) {
+      var menu = document.getElementById(id);
+      var dropdowns = document.getElementsByClassName('dropdown-content');
+      for (var i = 0; i < dropdowns.length; i++) {
+        if (dropdowns[i].id !== id) {
+          dropdowns[i].style.display = 'none';
+        }
+      }
+      if (menu.style.display === "block") {
+        menu.style.display = "none";
+      } else {
+        menu.style.display = "block";
+      }
+    }
+    function closeDropdown(id) {
+      document.getElementById(id).style.display = "none";
+    }
+  </script>
+</body>
+</html>
